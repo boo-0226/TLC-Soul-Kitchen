@@ -1,0 +1,251 @@
+/* Global Styles */
+html, body {
+    background-color: black;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: gold;
+    font-size: 19px;
+  }
+
+  /* Container for the entire menu */
+  .menu-container {
+    margin: 40px ; /* Centers the container horizontally with some top/bottom margini */
+    width: 200%; /* This was the only way I could make the contents stretch horizonally */
+    border: 1px solid white; /* White border around the container */
+    padding: 20px; /* Spacing inside the container */
+    background-color: black; /* Keep the background consistent */
+  }
+  
+  /* Restaurant Title */
+  .customer-title {
+    text-align: center;
+    font-size: 3em;
+    margin: 20px 0;
+  }
+  
+  /* Menu Category Header with white dividers */
+  .menu-category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    margin: 15px 0;
+    color: gold;
+  }
+  .menu-category::before,
+  .menu-category::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid white;
+  }
+  .menu-category::before {
+    margin-right: 15px;
+  }
+  .menu-category::after {
+    margin-left: 15px;
+  }
+  
+  /* Menu Item container */
+  .menu-item {
+    display: flex;
+   
+    align-items: center;
+    width: 95%;
+    padding: 15px 25px;
+    color: gold;
+    font-size: 1.1em;
+  }
+
+  /* Menu Item text to the left*/
+  .item-name{
+    text-align: left;
+    flex:1;
+  }
+
+  /* Description of Item */
+  .item-description{
+    font-size: 0.8em; 
+    color: white;
+    margin: 2px 0 0 0; 
+  }
+
+  /* Price of Menu text to the right */
+  .item-price {
+    text-align: right;
+   flex: 1;
+   
+  }
+
+  /*------------------------Adimn page CSS --------------------------------------------*/
+
+/* Admin Page Container */
+.admin-container {
+  margin: 50px;
+  width: 200%;
+  border: 2px solid white;
+  padding: 20px;
+  background-color: black;
+  color: gold;
+}
+
+/* Admin Form Section */
+.admin-form {
+  margin: 40px;
+  padding: 20px;
+  border: 1px solid gold;
+  border-radius: 8px;
+}
+
+.admin-form h2 {
+  margin-top: 0;
+}
+
+.admin-form form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.admin-form form input,
+.admin-form form select {
+  padding: 10px;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-form form button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: gold;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+/* Admin List Section */
+.admin-list {
+  padding: 20px;
+  border: 1px solid gold;
+  border-radius: 8px;
+}
+
+.admin-list h3 {
+  margin-top: 0;
+}
+
+.admin-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+}
+
+.admin-list li:last-child {
+  border-bottom: none;
+}
+
+/* Button Group for Delete and Edit */
+.admin-list li .button-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Admin Left and Right Columns */
+.admin-left {
+  flex: 1;
+}
+
+.admin-right {
+  
+  flex: 1;
+  background-color: black; /* Light background for preview */
+  padding: 10px;
+  border: 1px solid gold; /* Matching the theme */
+  border-radius: 8px; /* Matching other sections */
+}
+
+/* Live Menu Preview Styles */
+.menu-preview {
+  margin-top: 10px;
+}
+
+.menu-category {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: gold; /* Matching the admin theme */
+}
+
+.menu-item {
+  list-style: none;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-info {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-weight: bold;
+  color: gold; /* White text for contrast on light background */
+}
+
+.item-description {
+  margin: 0;
+  font-style: italic;
+  color: white;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #fff; /* White text for contrast */
+}
+
+/* Updated Button Styles */
+.delete-button {
+  background-color: red;     /* Changed to red as requested */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  min-width: 80px;
+  text-align: center;
+}
+
+.edit-button {
+  background-color: white;   /* Changed to white as requested */
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  width: 60px;
+  text-align: center;
+}
+.submit-button {
+  background-color: gold;
+  color: black;
+  padding: 10px 20px;        /* Match form button padding */
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.cancel-button {
+  background-color: white;
+  color: black;
+  padding: 10px 20px;        /* Match form button padding */
+  border: none;
+  cursor: pointer;
+  min-width: 200px;
+}
