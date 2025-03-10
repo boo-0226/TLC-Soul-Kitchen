@@ -66,12 +66,10 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
       }, {})
     : { [filterCategory]: filteredItems };
 
-  // Calculate total earnings from completed orders
   const totalEarnings = preorders
     .filter(order => order.status === 'complete')
     .reduce((sum, order) => sum + order.total, 0);
 
-  // Handle order status updates
   const handleCancelOrder = (index) => {
     const updatedPreorders = [...preorders];
     updatedPreorders[index] = { ...updatedPreorders[index], status: 'cancelled' };
@@ -93,7 +91,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
 
   return (
     <div className="admin-container">
-      {/* Tab Navigation */}
       <div className="admin-tabs">
         <button
           className={`tab-button ${activeTab === 'menu-management' ? 'active' : ''}`}
@@ -115,9 +112,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
         </button>
       </div>
 
-      {/* Tab Content */}
       <div className="admin-content">
-        {/* Menu Management Tab */}
         {activeTab === 'menu-management' && (
           <div className="admin-left">
             <div className="admin-form">
@@ -258,7 +253,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
           </div>
         )}
 
-        {/* Preorder Dashboard Tab */}
         {activeTab === 'preorder-dashboard' && (
           <div className="preorder-dashboard">
             <h3 className="admin-title">Preorder Dashboard</h3>
@@ -311,7 +305,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
           </div>
         )}
 
-        {/* Live Menu Preview Tab */}
         {activeTab === 'live-preview' && (
           <div className="admin-right">
             <h2>Live Menu Preview</h2>
@@ -345,14 +338,15 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
 };
 
 const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
+  console.log('CustomerPage menuItems:', menuItems); // Debug log to check menuItems
   const [selectedItems, setSelectedItems] = useState([]);
   const [location, setLocation] = useState('Pflugerville');
   const [instructions, setInstructions] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [confirmation, setConfirmation] = useState(null);
+  const [errors, setErrors] = useState({ customerName: '', phone: '' });
 
-  // Calculate subtotal whenever selectedItems changes
   const subtotal = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleAddItem = (item) => {
@@ -377,10 +371,26 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     );
   };
 
+  const validateForm = () => {
+    const newErrors = { customerName: '', phone: '' };
+    let isValid = true;
+
+    if (!customerName.trim()) {
+      newErrors.customerName = 'Customer name is required';
+      isValid = false;
+    }
+    if (!phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmitOrder = (e) => {
     e.preventDefault();
-    if (!customerName.trim() || !phone.trim()) {
-      alert('Please enter your name and phone number.');
+    if (!validateForm()) {
       return;
     }
     const total = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -401,6 +411,7 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     setInstructions('');
     setCustomerName('');
     setPhone('');
+    setErrors({ customerName: '', phone: '' });
   };
 
   const categories = ['Soul Food', 'Sides', 'Desserts', 'Drinks'];
@@ -415,7 +426,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     <div className="menu-container">
       <h2 className="customer-title">TLC Soul Kitchen - Preorder Promotion</h2>
 
-      {/* Menu Display */}
       {categories.map(category => (
         <div key={category}>
           <h3 className="menu-category">{category}</h3>
@@ -429,14 +439,19 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
                   )}
                 </div>
                 <span className="item-price">${item.price.toFixed(2)}</span>
-                <button type="button" onClick={() => handleAddItem(item)}>Add to Order</button>
+                <button
+                  type="button"
+                  onClick={() => handleAddItem(item)}
+                  aria-label={`Add ${item.name} to order`}
+                >
+                  Add to Order
+                </button>
               </li>
             ))}
           </ul>
         </div>
       ))}
 
-      {/* Preorder Form */}
       <div className="preorder-form">
         <h3>Place Your Preorder</h3>
         <p className="preorder-info">
@@ -454,18 +469,35 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
                 {selectedItems.map(item => (
                   <li key={item.id}>
                     {item.name} x
-                    <button type="button" onClick={() => handleQuantityChange(item.id, -1)}>-</button>
+                    <button
+                      type="button"
+                      onClick={() => handleQuantityChange(item.id, -1)}
+                      aria-label={`Decrease quantity of ${item.name}`}
+                    >
+                      -
+                    </button>
                     {item.quantity}
-                    <button type="button" onClick={() => handleQuantityChange(item.id, 1)}>+</button>
+                    <button
+                      type="button"
+                      onClick={() => handleQuantityChange(item.id, 1)}
+                      aria-label={`Increase quantity of ${item.name}`}
+                    >
+                      +
+                    </button>
                     - ${item.price.toFixed(2)}
-                    <button type="button" onClick={() => handleRemoveItem(item.id)}>Remove</button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(item.id)}
+                      aria-label={`Remove ${item.name} from order`}
+                    >
+                      Remove
+                    </button>
                   </li>
                 ))}
               </ul>
             ) : (
               <p>No items selected.</p>
             )}
-            {/* Display Subtotal */}
             {selectedItems.length > 0 && (
               <p className="subtotal">Subtotal: ${subtotal.toFixed(2)}</p>
             )}
@@ -474,32 +506,56 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
             Location: Pflugerville
           </label>
           <br />
-          <label>
+          <label htmlFor="customerName">
             Customer Name:<span className="required-asterisk">*</span>
             <input
               type="text"
+              id="customerName"
+              name="customerName"
               value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+                setErrors(prev => ({ ...prev, customerName: '' }));
+              }}
               placeholder="Enter your name"
               required
+              aria-describedby="customerName-error"
             />
+            {errors.customerName && (
+              <span className="error-message" id="customerName-error">
+                {errors.customerName}
+              </span>
+            )}
           </label>
           <br />
-          <label>
+          <label htmlFor="phone">
             Phone Number:<span className="required-asterisk">*</span>
             <input
               type="tel"
+              id="phone"
+              name="phone"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                setErrors(prev => ({ ...prev, phone: '' }));
+              }}
               placeholder="Enter your phone number (e.g., 123-456-7890)"
               required
+              aria-describedby="phone-error"
             />
+            {errors.phone && (
+              <span className="error-message" id="phone-error">
+                {errors.phone}
+              </span>
+            )}
           </label>
           <br />
-          <label>
+          <label htmlFor="instructions">
             Special Request:
             <input
               type="text"
+              id="instructions"
+              name="instructions"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               placeholder="e.g., 'Please prepare by 6 PM'"
@@ -511,7 +567,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
           </button>
         </form>
 
-        {/* Confirmation Modal */}
         {confirmation && (
           <div className="confirmation-modal">
             <h3>Order Confirmation</h3>
@@ -540,7 +595,14 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 const App = () => {
   const [menuItems, setMenuItems] = useState(() => {
     const storedItems = localStorage.getItem('menuItems');
-    return storedItems ? JSON.parse(storedItems) : [];
+    return storedItems ? JSON.parse(storedItems) : [
+      { id: 1, category: 'Soul Food', name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
+      { id: 2, category: 'Soul Food', name: 'Crawfish & Sausage Etouffee', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
+      { id: 3, category: 'Soul Food', name: 'Fried Chicken', price: 13.00, description: '3 Piece of either Drum or Wing' },
+      { id: 4, category: 'Soul Food', name: 'Seafood Pasta', price: 13.00, description: 'Cheesy shrimp and sausage pasta' },
+      { id: 5, category: 'Soul Food', name: 'Chicken Birria', price: 10.00, description: '3 Birria tacos served with consome (soup dip) on the side' },
+      // Add more default items for Sides, Desserts, Drinks if needed
+    ];
   });
 
   const [preorders, setPreorders] = useState(() => {
@@ -559,7 +621,6 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  // Hardcoded credentials (for demo purposes)
   const VALID_USERNAME = 'admin';
   const VALID_PASSWORD = 'password123';
 
