@@ -1,4 +1,12 @@
 /*
   X-Content-Type-Options: nosniff
-  Content-Type: text/html; charset=UTF-8
   Cache-Control: public, max-age=0, must-revalidate
+
+/assets/*.js
+  Content-Type: application/javascript; charset=UTF-8
+
+/assets/*.css
+  Content-Type: text/css; charset=UTF-8
+
+/index.html
+  Content-Type: text/html; charset=UTF-8

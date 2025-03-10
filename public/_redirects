@@ -1,1 +1,5 @@
-/*    /index.html    200
+# Allow static assets to be served directly
+/assets/*  -  200
+
+# Redirect all other requests to index.html for client-side routing
+/*  /index.html  200
