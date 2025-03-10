@@ -1,251 +1,685 @@
-/* Global Styles */
-html, body {
-    background-color: black;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    color: gold;
-    font-size: 19px;
-  }
+/* General Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1a1a1a;
+  color: white;
+}
 
-  /* Container for the entire menu */
-  .menu-container {
-    margin: 40px ; /* Centers the container horizontally with some top/bottom margini */
-    width: 200%; /* This was the only way I could make the contents stretch horizonally */
-    border: 1px solid white; /* White border around the container */
-    padding: 20px; /* Spacing inside the container */
-    background-color: black; /* Keep the background consistent */
-  }
-  
-  /* Restaurant Title */
-  .customer-title {
-    text-align: center;
-    font-size: 3em;
-    margin: 20px 0;
-  }
-  
-  /* Menu Category Header with white dividers */
-  .menu-category {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5em;
-    margin: 15px 0;
-    color: gold;
-  }
-  .menu-category::before,
-  .menu-category::after {
-    content: "";
-    flex: 1;
-    border-top: 1px solid white;
-  }
-  .menu-category::before {
-    margin-right: 15px;
-  }
-  .menu-category::after {
-    margin-left: 15px;
-  }
-  
-  /* Menu Item container */
-  .menu-item {
-    display: flex;
-   
-    align-items: center;
-    width: 95%;
-    padding: 15px 25px;
-    color: gold;
-    font-size: 1.1em;
-  }
-
-  /* Menu Item text to the left*/
-  .item-name{
-    text-align: left;
-    flex:1;
-  }
-
-  /* Description of Item */
-  .item-description{
-    font-size: 0.8em; 
-    color: white;
-    margin: 2px 0 0 0; 
-  }
-
-  /* Price of Menu text to the right */
-  .item-price {
-    text-align: right;
-   flex: 1;
-   
-  }
-
-  /*------------------------Adimn page CSS --------------------------------------------*/
-
-/* Admin Page Container */
-.admin-container {
-  margin: 50px;
-  width: 200%;
-  border: 2px solid white;
+/* Customer Page */
+.menu-container {
   padding: 20px;
-  background-color: black;
-  color: gold;
-}
-
-/* Admin Form Section */
-.admin-form {
-  margin: 40px;
-  padding: 20px;
-  border: 1px solid gold;
-  border-radius: 8px;
-}
-
-.admin-form h2 {
-  margin-top: 0;
-}
-
-.admin-form form label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.admin-form form input,
-.admin-form form select {
-  padding: 10px;
-  font-size: 1.2em;
-  margin-bottom: 10px;
-  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
-.admin-form form button {
-  padding: 10px 20px;
-  font-size: 1.2em;
+.customer-title {
+  color: gold;
+  text-align: center;
+  font-size: 1.8em;
+}
+
+.menu-category {
+  color: gold;
+  margin-top: 20px;
+  font-size: 1.5em;
+}
+
+.menu-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #2a2a2a;
+  margin: 5px 0;
+  border-radius: 5px;
+  gap: 10px;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.item-name {
+  font-weight: bold;
+}
+
+.item-description {
+  font-size: 0.9em;
+  color: #ccc;
+  margin: 5px 0 0 0;
+}
+
+.item-price {
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.menu-item button {
+  padding: 5px 10px;
   background-color: gold;
   color: black;
   border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-item button:hover {
+  background-color: #d4af37;
+}
+
+/* Preorder Form */
+.preorder-form {
+  margin-top: 30px;
+  padding: 20px;
+  border: 2px solid gold;
+  border-radius: 5px;
+  background-color: #1a1a1a;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.preorder-form h3 {
+  color: gold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.preorder-form h4 {
+  color: gold;
+  margin-bottom: 10px;
+}
+
+.preorder-form ul {
+  list-style: none;
+  padding: 0;
+}
+
+.preorder-form li {
+  margin: 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  color: gold;
+}
+
+.preorder-form li button {
+  margin: 0 5px;
+  padding: 2px 5px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid gold;
+  border-radius: 3px;
+}
+
+.preorder-form li button:hover {
+  background-color: #3a3a2a;
+}
+
+.preorder-form label {
+  display: block;
+  margin: 10px 0 5px;
+  color: white;
+}
+
+.preorder-form input {
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid gold;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.preorder-form .submit-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.preorder-form .submit-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.preorder-form .submit-button:hover:not(:disabled) {
+  background-color: #d4af37;
+}
+
+/* Preorder Form Info Message */
+.preorder-info {
+  color: #ccc;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Subtotal Display */
+.subtotal {
+  color: gold; /* Match the gold theme */
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
+/* Confirmation Modal */
+.confirmation-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2a2a2a;
+  padding: 20px;
+  border: 2px solid gold;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+  box-sizing: border-box;
+}
+
+.confirmation-modal h3 {
+  color: gold;
+  margin-bottom: 15px;
+}
+
+.confirmation-modal ul {
+  list-style: none;
+  padding: 0;
+}
+
+.confirmation-modal li {
+  margin: 5px 0;
+}
+
+.confirmation-modal p {
+  margin: 10px 0;
+}
+
+.confirmation-modal button {
+  margin-top: 20px;
+  padding: 5px 10px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.confirmation-modal button:hover {
+  background-color: #d4af37;
+}
+
+/* Admin Page */
+.admin-container {
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.admin-left,
+.admin-right {
+  padding: 20px;
+}
+
+.admin-title {
+  color: gold;
+  margin-bottom: 20px;
+}
+
+.admin-form label {
+  display: block;
+  margin: 10px 0 5px;
+  color: white;
+}
+
+.admin-form input,
+.admin-form select {
+  padding: 8px;
+  width: 100%;
+  max-width: 200px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid gold;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.admin-form .submit-button,
+.admin-form .cancel-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-/* Admin List Section */
-.admin-list {
-  padding: 20px;
-  border: 1px solid gold;
-  border-radius: 8px;
+.admin-form .submit-button {
+  background-color: gold;
+  color: black;
 }
 
-.admin-list h3 {
-  margin-top: 0;
+.admin-form .submit-button:hover {
+  background-color: #d4af37;
+}
+
+.admin-form .cancel-button {
+  background-color: #f44336;
+  color: white;
+  margin-left: 10px;
+}
+
+.admin-form .cancel-button:hover {
+  background-color: #d32f2f;
 }
 
 .admin-list ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .admin-list li {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #444;
-}
-
-.admin-list li:last-child {
-  border-bottom: none;
-}
-
-/* Button Group for Delete and Edit */
-.admin-list li .button-group {
-  display: flex;
+  padding: 10px;
+  background-color: #2a2a2a;
+  margin: 5px 0;
+  border-radius: 5px;
   gap: 10px;
 }
 
-/* Admin Left and Right Columns */
-.admin-left {
-  flex: 1;
-}
-
-.admin-right {
-  
-  flex: 1;
-  background-color: black; /* Light background for preview */
-  padding: 10px;
-  border: 1px solid gold; /* Matching the theme */
-  border-radius: 8px; /* Matching other sections */
-}
-
-/* Live Menu Preview Styles */
-.menu-preview {
-  margin-top: 10px;
-}
-
-.menu-category {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-  color: gold; /* Matching the admin theme */
-}
-
-.menu-item {
-  list-style: none;
-  margin-bottom: 8px;
+.button-group {
   display: flex;
-  justify-content: space-between;
+  gap: 5px;
 }
 
-.item-info {
-  flex-grow: 1;
-}
-
-.item-name {
-  font-weight: bold;
-  color: gold; /* White text for contrast on light background */
-}
-
-.item-description {
-  margin: 0;
-  font-style: italic;
-  color: white;
-}
-
-.item-price {
-  font-weight: bold;
-  color: #fff; /* White text for contrast */
-}
-
-/* Updated Button Styles */
-.delete-button {
-  background-color: red;     /* Changed to red as requested */
-  color: white;
+.delete-button,
+.edit-button {
   padding: 5px 10px;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 1em;
-  min-width: 80px;
-  text-align: center;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
 }
 
 .edit-button {
-  background-color: white;   /* Changed to white as requested */
-  color: black;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 1em;
-  width: 60px;
-  text-align: center;
-}
-.submit-button {
-  background-color: gold;
-  color: black;
-  padding: 10px 20px;        /* Match form button padding */
-  border: none;
-  cursor: pointer;
-  margin-right: 10px;
+  background-color: #2196f3;
+  color: white;
 }
 
-.cancel-button {
-  background-color: white;
-  color: black;
-  padding: 10px 20px;        /* Match form button padding */
-  border: none;
+.edit-button:hover {
+  background-color: #1976d2;
+}
+
+.category-header {
+  color: gold;
+  margin-top: 15px;
+}
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid gold;
+  border-radius: 5px 5px 0 0;
   cursor: pointer;
-  min-width: 200px;
+  font-size: 1.1em;
+}
+
+.tab-button.active {
+  background-color: gold;
+  color: black;
+  font-weight: bold;
+}
+
+.tab-button:hover:not(.active) {
+  background-color: #3a3a3a;
+}
+
+/* Admin Content */
+.admin-content {
+  padding: 20px;
+}
+
+/* Preorder Dashboard */
+.preorder-dashboard {
+  margin: 0;
+  padding: 20px;
+  border: 2px solid gold;
+  border-radius: 5px;
+  background-color: #1a1a1a;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.preorder-dashboard h3 {
+  color: gold;
+  margin-bottom: 15px;
+}
+
+.preorder-dashboard ul {
+  list-style: none;
+  padding: 0;
+}
+
+.preorder-dashboard li {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.preorder-dashboard p {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+/* Order Item Styles */
+.order-item {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.order-item.pending {
+  background-color: #2a2a2a;
+  border: 2px solid #d4af37;
+}
+
+.order-item.cancelled {
+  background-color: #4a2a2a;
+  border: 2px solid #ff4d4d;
+  text-decoration: line-through;
+  color: #888;
+}
+
+.order-item.complete {
+  background-color: #2a4a2a;
+  border: 2px solid #4caf50;
+}
+
+/* Order Actions */
+.order-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.action-button.cancel {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.action-button.complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.action-button.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.action-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.action-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* Login Container */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login-container h2 {
+  color: gold;
+  margin-bottom: 20px;
+}
+
+.login-container label {
+  display: block;
+  margin: 10px 0 5px;
+  color: white;
+}
+
+.login-container input {
+  padding: 8px;
+  width: 100%;
+  max-width: 200px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid gold;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.login-container .submit-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-container .submit-button:hover {
+  background-color: #d4af37;
+}
+
+/* Error Message */
+.error-message {
+  color: #ff4d4d;
+  margin-top: 10px;
+}
+
+/* Logout Button */
+.logout-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 8px 15px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Required Asterisk */
+.required-asterisk {
+  color: #ff4d4d;
+  margin-left: 5px;
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .menu-container {
+    padding: 10px;
+  }
+
+  .customer-title {
+    font-size: 1.5em;
+  }
+
+  .menu-category {
+    font-size: 1.3em;
+  }
+
+  .menu-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .item-price {
+    margin-right: 0;
+  }
+
+  .menu-item button {
+    width: 100%;
+    max-width: 150px;
+  }
+
+  .preorder-form {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .preorder-form h3 {
+    font-size: 1.2em;
+  }
+
+  .preorder-info {
+    font-size: 0.85em;
+  }
+
+  .preorder-form input {
+    max-width: 100%;
+  }
+
+  .preorder-form .submit-button {
+    max-width: 150px;
+  }
+
+  .subtotal {
+    font-size: 1em; /* Adjust font size for smaller screens */
+  }
+
+  .confirmation-modal {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .admin-container {
+    padding: 10px;
+  }
+
+  .admin-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tab-button {
+    margin: 5px 0;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .preorder-dashboard {
+    max-width: 100%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .customer-title {
+    font-size: 1.2em;
+  }
+
+  .menu-category {
+    font-size: 1.1em;
+  }
+
+  .menu-item {
+    padding: 8px;
+  }
+
+  .item-info {
+    min-width: 100%;
+  }
+
+  .preorder-form {
+    padding: 10px;
+  }
+
+  .preorder-info {
+    font-size: 0.8em;
+  }
+
+  .preorder-form label {
+    margin: 5px 0 3px;
+  }
+
+  .preorder-form input {
+    padding: 6px;
+  }
+
+  .preorder-form .submit-button {
+    padding: 8px 15px;
+  }
+
+  .subtotal {
+    font-size: 0.9em; /* Further adjust for very small screens */
+  }
 }
