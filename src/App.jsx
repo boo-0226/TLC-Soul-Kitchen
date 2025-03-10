@@ -595,7 +595,9 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 const App = () => {
   const [menuItems, setMenuItems] = useState(() => {
     const storedItems = localStorage.getItem('menuItems');
-    return storedItems ? JSON.parse(storedItems) : [
+    const parsedItems = storedItems ? JSON.parse(storedItems) : [];
+    // Only use parsedItems if it's a non-empty array; otherwise, use default items
+    return Array.isArray(parsedItems) && parsedItems.length > 0 ? parsedItems : [
       { id: 1, category: 'Soul Food', name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
       { id: 2, category: 'Soul Food', name: 'Crawfish & Sausage Etouffee', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
       { id: 3, category: 'Soul Food', name: 'Fried Chicken', price: 13.00, description: '3 Piece of either Drum or Wing' },
@@ -643,7 +645,10 @@ const App = () => {
   };
 
   useEffect(() => {
-    localStorage.setItem('menuItems', JSON.stringify(menuItems));
+    // Only save to localStorage if menuItems is not empty
+    if (menuItems.length > 0) {
+      localStorage.setItem('menuItems', JSON.stringify(menuItems));
+    }
   }, [menuItems]);
 
   useEffect(() => {
