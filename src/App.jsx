@@ -424,7 +424,7 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 
   return (
     <div className="menu-container">
-      <h2 className="customer-title">TLC Soul Kitchen - Preorder Promotion</h2>
+      <h2 className="customer-title">TLC Soul Kitchen - Preorder Menu</h2>
 
       {categories.map(category => (
         <div key={category}>
