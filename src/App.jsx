@@ -338,7 +338,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
 };
 
 const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
-  console.log('CustomerPage menuItems:', menuItems); // Debug log to check menuItems
+  console.log('CustomerPage received menuItems:', menuItems); // Updated log
   const [selectedItems, setSelectedItems] = useState([]);
   const [location, setLocation] = useState('Pflugerville');
   const [instructions, setInstructions] = useState('');
@@ -594,29 +594,75 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 
 const App = () => {
   const [menuItems, setMenuItems] = useState(() => {
+    console.log('Initializing menuItems...');
     const storedItems = localStorage.getItem('menuItems');
+    console.log('Stored items from localStorage:', storedItems);
     const parsedItems = storedItems ? JSON.parse(storedItems) : [];
-    // Only use parsedItems if it's a non-empty array; otherwise, use default items
-    return Array.isArray(parsedItems) && parsedItems.length > 0 ? parsedItems : [
+    console.log('Parsed items:', parsedItems);
+    const defaultItems = [
+      // Soul Food
       { id: 1, category: 'Soul Food', name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
       { id: 2, category: 'Soul Food', name: 'Crawfish & Sausage Etouffee', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
       { id: 3, category: 'Soul Food', name: 'Fried Chicken', price: 13.00, description: '3 Piece of either Drum or Wing' },
       { id: 4, category: 'Soul Food', name: 'Seafood Pasta', price: 13.00, description: 'Cheesy shrimp and sausage pasta' },
       { id: 5, category: 'Soul Food', name: 'Chicken Birria', price: 10.00, description: '3 Birria tacos served with consome (soup dip) on the side' },
-      // Add more default items for Sides, Desserts, Drinks if needed
+      // Sides
+      { id: 6, category: 'Sides', name: 'Mac and Cheese', price: 4.00, description: 'Creamy and cheesy macaroni' },
+      { id: 7, category: 'Sides', name: 'Collard Greens', price: 3.50, description: 'Slow-cooked greens with a smoky flavor' },
+      { id: 8, category: 'Sides', name: 'Cornbread', price: 2.00, description: 'Sweet and moist cornbread slice' },
+      // Desserts
+      { id: 9, category: 'Desserts', name: 'Peach Cobbler', price: 5.00, description: 'Warm cobbler with a sweet peach filling' },
+      { id: 10, category: 'Desserts', name: 'Sweet Potato Pie', price: 4.50, description: 'Classic Southern pie with a spiced filling' },
+      // Drinks
+      { id: 11, category: 'Drinks', name: 'Sweet Tea', price: 2.50, description: 'Refreshing Southern-style iced tea' },
+      { id: 12, category: 'Drinks', name: 'Lemonade', price: 2.50, description: 'Freshly squeezed lemonade' },
     ];
+    const result = Array.isArray(parsedItems) && parsedItems.length > 0 ? parsedItems : defaultItems;
+    console.log('Final menuItems:', result);
+    return result;
   });
 
   const [preorders, setPreorders] = useState(() => {
+    console.log('Initializing preorders...');
     const storedPreorders = localStorage.getItem('preorders');
-    return storedPreorders ? JSON.parse(storedPreorders).map(order => ({
+    console.log('Stored preorders from localStorage:', storedPreorders);
+    let parsedPreorders;
+    try {
+      parsedPreorders = storedPreorders ? JSON.parse(storedPreorders) : [];
+    } catch (error) {
+      console.error('Error parsing preorders from localStorage:', error);
+      parsedPreorders = [];
+    }
+    const defaultPreorders = [
+      {
+        items: [
+          { id: 1, name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, quantity: 2 },
+          { id: 6, name: 'Mac and Cheese', price: 4.00, quantity: 1 },
+        ],
+        location: 'Pflugerville',
+        total: 22.00,
+        instructions: 'Please deliver by 6 PM',
+        timestamp: new Date().toISOString(),
+        status: 'pending',
+        customerName: 'John Doe',
+        phone: '123-456-7890',
+      },
+    ];
+    const result = Array.isArray(parsedPreorders) && parsedPreorders.length > 0 ? parsedPreorders.map(order => ({
       ...order,
       status: order.status || 'pending'
-    })) : [];
+    })) : defaultPreorders;
+    console.log('Final preorders:', result);
+    return result;
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('isAuthenticated') === 'true';
+    console.log('Initializing isAuthenticated...');
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    console.log('Stored isAuthenticated from localStorage:', storedAuth);
+    const result = storedAuth === 'true';
+    console.log('Final isAuthenticated:', result);
+    return result;
   });
 
   const [username, setUsername] = useState('');
@@ -652,7 +698,9 @@ const App = () => {
   }, [menuItems]);
 
   useEffect(() => {
-    localStorage.setItem('preorders', JSON.stringify(preorders));
+    if (preorders.length > 0) {
+      localStorage.setItem('preorders', JSON.stringify(preorders));
+    }
   }, [preorders]);
 
   const addMenuItem = (item) => {
