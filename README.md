@@ -10,3 +10,15 @@ Currently, two official plugins are available:
 
 ## Local host 
 http://localhost:5173/
+
+## Neon.tech
+Where the database is use to be on the cloud to recieve and send data from the app using postgresql
+
+## Netlify 
+Used to deploy the app the web. 
+
+## Workflow of the pipeline
+Edit code in visual studio
+Push code to github repo 
+Netlify is needs to be redeployed and it pulls from the github repo
+Neon save and sends the data from the database 
