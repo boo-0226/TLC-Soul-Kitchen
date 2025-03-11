@@ -7,7 +7,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [requiresTwoSides, setRequiresTwoSides] = useState(false);
   const [filterCategory, setFilterCategory] = useState('All');
   const [editingItem, setEditingItem] = useState(null);
   const [activeTab, setActiveTab] = useState('menu-management');
@@ -19,13 +18,11 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
       setName(editingItem.name || '');
       setPrice(editingItem.price ? editingItem.price.toString() : '');
       setDescription(editingItem.description || '');
-      setRequiresTwoSides(editingItem.requires_two_sides || false);
     } else {
       setCategory('Soul Food');
       setName('');
       setPrice('');
       setDescription('');
-      setRequiresTwoSides(false);
     }
   }, [editingItem]);
 
@@ -37,7 +34,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
       name,
       price: price ? parseFloat(price) : 0,
       description,
-      requiresTwoSides,
       id: editingItem ? editingItem.id : Date.now(),
     };
     console.log('Updated item:', updatedItem);
@@ -55,7 +51,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
     setName('');
     setPrice('');
     setDescription('');
-    setRequiresTwoSides(false);
   };
 
   const categories = ['Soul Food', 'Sides', 'Desserts', 'Drinks'];
@@ -173,15 +168,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </label>
-                <br />
-                <label>
-                  Requires Two Sides:
-                  <input
-                    type="checkbox"
-                    checked={requiresTwoSides}
-                    onChange={(e) => setRequiresTwoSides(e.target.checked)}
-                  />
-                </label>
                 <button type="submit" className="submit-button">
                   {editingItem ? 'Save Changes' : 'Add Menu Item'}
                 </button>
@@ -222,7 +208,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
                       <ul>
                         {groupedItems[category].map(item => (
                           <li key={item.id}>
-                            {item.name} - ${item.price.toFixed(2)} (Requires Two Sides: {item.requires_two_sides ? 'Yes' : 'No'})
+                            {item.name} - ${item.price.toFixed(2)}
                             <div className="button-group">
                               <button
                                 className="delete-button"
@@ -251,7 +237,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
                 <ul>
                   {filteredItems.map(item => (
                     <li key={item.id}>
-                      {item.name} - ${item.price.toFixed(2)} (Requires Two Sides: {item.requires_two_sides ? 'Yes' : 'No'})
+                      {item.name} - ${item.price.toFixed(2)}
                       <div className="button-group">
                         <button
                           className="delete-button"
@@ -291,15 +277,6 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
                       {order.items.map(item => (
                         <li key={item.id}>
                           {item.name} x{item.quantity} - ${item.price.toFixed(2)}
-                          {item.selectedSides && item.selectedSides.length > 0 && (
-                            <ul>
-                              {item.selectedSides.map(side => (
-                                <li key={side.id}>
-                                  Side: {side.name} - ${side.price.toFixed(2)}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
                         </li>
                       ))}
                     </ul>
@@ -379,48 +356,22 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [confirmation, setConfirmation] = useState(null);
-  const [errors, setErrors] = useState({ customerName: '', phone: '', sides: '' });
-  const [selectedSides, setSelectedSides] = useState({});
+  const [errors, setErrors] = useState({ customerName: '', phone: '' });
 
-  const sides = menuItems.filter(item => item.category === 'Sides');
-  const subtotal = selectedItems.reduce((sum, item) => {
-    let itemTotal = item.price * item.quantity;
-    if (item.selectedSides) {
-      item.selectedSides.forEach(side => {
-        itemTotal += side.price * item.quantity;
-      });
-    }
-    return sum + itemTotal;
-  }, 0);
+  const subtotal = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleAddItem = (item) => {
-    if (item.category === 'Sides') {
-      return;
-    }
-
     setSelectedItems(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {
         return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { ...item, quantity: 1, requiresTwoSides: item.requires_two_sides, selectedSides: [] }];
+      return [...prev, { ...item, quantity: 1 }];
     });
-
-    if (item.requires_two_sides) {
-      setSelectedSides(prev => ({
-        ...prev,
-        [item.id]: prev[item.id] || [],
-      }));
-    }
   };
 
   const handleRemoveItem = (itemId) => {
     setSelectedItems(prev => prev.filter(i => i.id !== itemId));
-    setSelectedSides(prev => {
-      const newSides = { ...prev };
-      delete newSides[itemId];
-      return newSides;
-    });
   };
 
   const handleQuantityChange = (itemId, delta) => {
@@ -431,23 +382,8 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     );
   };
 
-  const handleSideSelection = (mainItemId, sideId, sideIndex) => {
-    setSelectedSides(prev => {
-      const currentSides = prev[mainItemId] || [];
-      const updatedSides = [...currentSides];
-      updatedSides[sideIndex] = sideId;
-      return { ...prev, [mainItemId]: updatedSides };
-    });
-
-    setSelectedItems(prev =>
-      prev.map(item =>
-        item.id === mainItemId ? { ...item, selectedSides: selectedSides[mainItemId] || [] } : item
-      )
-    );
-  };
-
   const validateForm = () => {
-    const newErrors = { customerName: '', phone: '', sides: '' };
+    const newErrors = { customerName: '', phone: '' };
     let isValid = true;
 
     if (!customerName.trim()) {
@@ -459,17 +395,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
       isValid = false;
     }
 
-    selectedItems.forEach(item => {
-      if (item.requiresTwoSides) {
-        const sidesForItem = selectedSides[item.id] || [];
-        const validSides = sidesForItem.filter(sideId => sideId && sides.find(s => s.id === parseInt(sideId)));
-        if (validSides.length !== 2) {
-          newErrors.sides = `Please select exactly two sides for ${item.name}.`;
-          isValid = false;
-        }
-      }
-    });
-
     setErrors(newErrors);
     return isValid;
   };
@@ -480,29 +405,10 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
       return;
     }
 
-    const orderItems = selectedItems.map(item => {
-      if (item.requiresTwoSides) {
-        const sidesForItem = selectedSides[item.id] || [];
-        const selectedSideItems = sidesForItem
-          .map(sideId => sides.find(s => s.id === parseInt(sideId)))
-          .filter(side => side);
-        return { ...item, selectedSides: selectedSideItems };
-      }
-      return item;
-    });
-
-    const total = orderItems.reduce((sum, item) => {
-      let itemTotal = item.price * item.quantity;
-      if (item.selectedSides) {
-        item.selectedSides.forEach(side => {
-          itemTotal += side.price * item.quantity;
-        });
-      }
-      return sum + itemTotal;
-    }, 0);
+    const total = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const order = {
-      items: orderItems,
+      items: selectedItems,
       location,
       total,
       instructions,
@@ -518,8 +424,7 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     setInstructions('');
     setCustomerName('');
     setPhone('');
-    setErrors({ customerName: '', phone: '', sides: '' });
-    setSelectedSides({});
+    setErrors({ customerName: '', phone: '' });
   };
 
   const categories = ['Soul Food', 'Sides', 'Desserts', 'Drinks'];
@@ -547,15 +452,13 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
                   )}
                 </div>
                 <span className="item-price">${item.price.toFixed(2)}</span>
-                {item.category !== 'Sides' && (
-                  <button
-                    type="button"
-                    onClick={() => handleAddItem(item)}
-                    aria-label={`Add ${item.name} to order`}
-                  >
-                    Add to Order
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => handleAddItem(item)}
+                  aria-label={`Add ${item.name} to order`}
+                >
+                  Add to Order
+                </button>
               </li>
             ))}
           </ul>
@@ -602,43 +505,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
                     >
                       Remove
                     </button>
-                    {item.requiresTwoSides && (
-                      <div>
-                        <h5>Select Two Sides for {item.name}</h5>
-                        <div>
-                          <label>
-                            Side 1:
-                            <select
-                              value={selectedSides[item.id]?.[0] || ''}
-                              onChange={(e) => handleSideSelection(item.id, e.target.value, 0)}
-                            >
-                              <option value="">Select a side</option>
-                              {sides.map(side => (
-                                <option key={side.id} value={side.id}>
-                                  {side.name} - ${side.price.toFixed(2)}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        </div>
-                        <div>
-                          <label>
-                            Side 2:
-                            <select
-                              value={selectedSides[item.id]?.[1] || ''}
-                              onChange={(e) => handleSideSelection(item.id, e.target.value, 1)}
-                            >
-                              <option value="">Select a side</option>
-                              {sides.map(side => (
-                                <option key={side.id} value={side.id}>
-                                  {side.name} - ${side.price.toFixed(2)}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        </div>
-                      </div>
-                    )}
                   </li>
                 ))}
               </ul>
@@ -709,9 +575,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
             />
           </label>
           <br />
-          {errors.sides && (
-            <span className="error-message">{errors.sides}</span>
-          )}
           <button type="submit" className="submit-button" disabled={!isFormValid}>
             Submit Preorder
           </button>
@@ -725,15 +588,6 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
               {confirmation.items.map(item => (
                 <li key={item.id}>
                   {item.name} x{item.quantity} - ${item.price.toFixed(2)}
-                  {item.selectedSides && item.selectedSides.length > 0 && (
-                    <ul>
-                      {item.selectedSides.map(side => (
-                        <li key={side.id}>
-                          Side: {side.name} - ${side.price.toFixed(2)}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </li>
               ))}
             </ul>

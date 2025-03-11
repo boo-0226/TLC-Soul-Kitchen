@@ -683,16 +683,3 @@ body {
     font-size: 0.9em; /* Further adjust for very small screens */
   }
 }
-
-.side-selection {
-  margin-top: 10px;
-}
-.side-selection label {
-  display: block;
-  margin: 5px 0;
-}
-.error-message {
-  color: red;
-  display: block;
-  margin: 5px 0;
-}
