@@ -12,18 +12,10 @@ exports.handler = async (event, context) => {
 
   try {
     const { category, name, price, description } = JSON.parse(event.body);
-    if (!category || !name || !price) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields: category, name, and price are required' }),
-      };
-    }
-
     const result = await pool.query(
       'INSERT INTO menu_items (category, name, price, description) VALUES ($1, $2, $3, $4) RETURNING *',
-      [category, name, parseFloat(price), description || null]
+      [category, name, price, description]
     );
-
     return {
       statusCode: 200,
       headers: {

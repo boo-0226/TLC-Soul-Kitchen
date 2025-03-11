@@ -1,5 +1,9 @@
+# Redirect apex domain to www
+http://tlcsoulkitchen.com/* https://www.tlcsoulkitchen.com/:splat 301!
+https://tlcsoulkitchen.com/* https://www.tlcsoulkitchen.com/:splat 301!
+
 # Allow static assets to be served directly
-/assets/*  -  200
+/assets/*  200
 
 # Redirect all other requests to index.html for client-side routing
 /*  /index.html  200

@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const result = await pool.query('SELECT * FROM menu_items');
+    const result = await pool.query('SELECT * FROM menu_items ORDER BY category, name');
     return {
       statusCode: 200,
       headers: {

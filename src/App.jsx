@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
-const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preorders, setPreorders }) => {
+const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preorders, setPreorders, updateOrderStatus, deleteOrder }) => {
   const [category, setCategory] = useState('Soul Food');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -26,7 +26,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
     }
   }, [editingItem]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('handleSubmit called');
     const updatedItem = {
@@ -46,7 +46,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
       setEditingItem(null);
     } else {
       console.log('Adding new item');
-      addMenuItem(updatedItem);
+      await addMenuItem(updatedItem);
     }
     setName('');
     setPrice('');
@@ -70,22 +70,33 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
     .filter(order => order.status === 'complete')
     .reduce((sum, order) => sum + order.total, 0);
 
-  const handleCancelOrder = (index) => {
-    const updatedPreorders = [...preorders];
-    updatedPreorders[index] = { ...updatedPreorders[index], status: 'cancelled' };
-    setPreorders(updatedPreorders);
+  const handleCancelOrder = async (index) => {
+    const order = preorders[index];
+    if (order.id) {
+      await updateOrderStatus(order.id, 'cancelled');
+      setPreorders(prev =>
+        prev.map((o, i) => (i === index ? { ...o, status: 'cancelled' } : o))
+      );
+    }
   };
 
-  const handleCompleteOrder = (index) => {
-    const updatedPreorders = [...preorders];
-    updatedPreorders[index] = { ...updatedPreorders[index], status: 'complete' };
-    setPreorders(updatedPreorders);
+  const handleCompleteOrder = async (index) => {
+    const order = preorders[index];
+    if (order.id) {
+      await updateOrderStatus(order.id, 'complete');
+      setPreorders(prev =>
+        prev.map((o, i) => (i === index ? { ...o, status: 'complete' } : o))
+      );
+    }
   };
 
-  const handleDeleteOrder = (index) => {
+  const handleDeleteOrder = async (index) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
-      const updatedPreorders = preorders.filter((_, i) => i !== index);
-      setPreorders(updatedPreorders);
+      const order = preorders[index];
+      if (order.id) {
+        await deleteOrder(order.id);
+        setPreorders(prev => prev.filter((_, i) => i !== index));
+      }
     }
   };
 
@@ -338,7 +349,7 @@ const AdminPage = ({ menuItems, setMenuItems, addMenuItem, deleteMenuItem, preor
 };
 
 const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
-  console.log('CustomerPage received menuItems:', menuItems); // Updated log
+  console.log('CustomerPage received menuItems:', menuItems);
   const [selectedItems, setSelectedItems] = useState([]);
   const [location, setLocation] = useState('Pflugerville');
   const [instructions, setInstructions] = useState('');
@@ -388,7 +399,7 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
     return isValid;
   };
 
-  const handleSubmitOrder = (e) => {
+  const handleSubmitOrder = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;
@@ -404,7 +415,7 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
       customerName,
       phone,
     };
-    addPreorder(order);
+    await addPreorder(order);
     setConfirmation(order);
     setSelectedItems([]);
     setLocation('Pflugerville');
@@ -593,84 +604,39 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 };
 
 const App = () => {
-  const [menuItems, setMenuItems] = useState(() => {
-    console.log('Initializing menuItems...');
-    const storedItems = localStorage.getItem('menuItems');
-    console.log('Stored items from localStorage:', storedItems);
-    const parsedItems = storedItems ? JSON.parse(storedItems) : [];
-    console.log('Parsed items:', parsedItems);
-    const defaultItems = [
-      // Soul Food
-      { id: 1, category: 'Soul Food', name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
-      { id: 2, category: 'Soul Food', name: 'Crawfish & Sausage Etouffee', price: 9.00, description: 'Served on top of white rice with a piece of cornbread on the side' },
-      { id: 3, category: 'Soul Food', name: 'Fried Chicken', price: 13.00, description: '3 Piece of either Drum or Wing' },
-      { id: 4, category: 'Soul Food', name: 'Seafood Pasta', price: 13.00, description: 'Cheesy shrimp and sausage pasta' },
-      { id: 5, category: 'Soul Food', name: 'Chicken Birria', price: 10.00, description: '3 Birria tacos served with consome (soup dip) on the side' },
-      // Sides
-      { id: 6, category: 'Sides', name: 'Mac and Cheese', price: 4.00, description: 'Creamy and cheesy macaroni' },
-      { id: 7, category: 'Sides', name: 'Collard Greens', price: 3.50, description: 'Slow-cooked greens with a smoky flavor' },
-      { id: 8, category: 'Sides', name: 'Cornbread', price: 2.00, description: 'Sweet and moist cornbread slice' },
-      // Desserts
-      { id: 9, category: 'Desserts', name: 'Peach Cobbler', price: 5.00, description: 'Warm cobbler with a sweet peach filling' },
-      { id: 10, category: 'Desserts', name: 'Sweet Potato Pie', price: 4.50, description: 'Classic Southern pie with a spiced filling' },
-      // Drinks
-      { id: 11, category: 'Drinks', name: 'Sweet Tea', price: 2.50, description: 'Refreshing Southern-style iced tea' },
-      { id: 12, category: 'Drinks', name: 'Lemonade', price: 2.50, description: 'Freshly squeezed lemonade' },
-    ];
-    const result = Array.isArray(parsedItems) && parsedItems.length > 0 ? parsedItems : defaultItems;
-    console.log('Final menuItems:', result);
-    return result;
-  });
-
-  const [preorders, setPreorders] = useState(() => {
-    console.log('Initializing preorders...');
-    const storedPreorders = localStorage.getItem('preorders');
-    console.log('Stored preorders from localStorage:', storedPreorders);
-    let parsedPreorders;
-    try {
-      parsedPreorders = storedPreorders ? JSON.parse(storedPreorders) : [];
-    } catch (error) {
-      console.error('Error parsing preorders from localStorage:', error);
-      parsedPreorders = [];
-    }
-    const defaultPreorders = [
-      {
-        items: [
-          { id: 1, name: 'Shrimp, Chicken & Sausage Gumbo', price: 9.00, quantity: 2 },
-          { id: 6, name: 'Mac and Cheese', price: 4.00, quantity: 1 },
-        ],
-        location: 'Pflugerville',
-        total: 22.00,
-        instructions: 'Please deliver by 6 PM',
-        timestamp: new Date().toISOString(),
-        status: 'pending',
-        customerName: 'John Doe',
-        phone: '123-456-7890',
-      },
-    ];
-    const result = Array.isArray(parsedPreorders) && parsedPreorders.length > 0 ? parsedPreorders.map(order => ({
-      ...order,
-      status: order.status || 'pending'
-    })) : defaultPreorders;
-    console.log('Final preorders:', result);
-    return result;
-  });
-
+  const [menuItems, setMenuItems] = useState([]);
+  const [preorders, setPreorders] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    console.log('Initializing isAuthenticated...');
     const storedAuth = localStorage.getItem('isAuthenticated');
-    console.log('Stored isAuthenticated from localStorage:', storedAuth);
-    const result = storedAuth === 'true';
-    console.log('Final isAuthenticated:', result);
-    return result;
+    return storedAuth === 'true';
   });
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
   const VALID_USERNAME = 'admin';
   const VALID_PASSWORD = 'password123';
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        // Fetch menu items from the database
+        const menuResponse = await fetch('/api/getMenu');
+        if (!menuResponse.ok) throw new Error('Failed to fetch menu items');
+        const menuData = await menuResponse.json();
+        setMenuItems(menuData);
+
+        // Fetch preorders from the database
+        const ordersResponse = await fetch('/api/getOrders');
+        if (!ordersResponse.ok) throw new Error('Failed to fetch orders');
+        const ordersData = await ordersResponse.json();
+        setPreorders(ordersData);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+    fetchInitialData();
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -690,30 +656,70 @@ const App = () => {
     localStorage.removeItem('isAuthenticated');
   };
 
-  useEffect(() => {
-    // Only save to localStorage if menuItems is not empty
-    if (menuItems.length > 0) {
-      localStorage.setItem('menuItems', JSON.stringify(menuItems));
+  const addMenuItem = async (item) => {
+    try {
+      const response = await fetch('/api/addMenuItem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
+      });
+      if (!response.ok) throw new Error('Failed to add menu item');
+      const newItem = await response.json();
+      setMenuItems(prevItems => [...prevItems, newItem]);
+    } catch (error) {
+      console.error('Error adding menu item:', error);
     }
-  }, [menuItems]);
-
-  useEffect(() => {
-    if (preorders.length > 0) {
-      localStorage.setItem('preorders', JSON.stringify(preorders));
-    }
-  }, [preorders]);
-
-  const addMenuItem = (item) => {
-    const newItem = { ...item, id: Date.now() };
-    setMenuItems(prevItems => [...prevItems, newItem]);
   };
 
-  const deleteMenuItem = (id) => {
-    setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
+  const deleteMenuItem = async (id) => {
+    try {
+      const response = await fetch(`/api/deleteMenuItem/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete menu item');
+      setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
   };
 
-  const addPreorder = (order) => {
-    setPreorders(prevOrders => [...prevOrders, order]);
+  const addPreorder = async (order) => {
+    try {
+      const response = await fetch('/api/submitOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order),
+      });
+      if (!response.ok) throw new Error('Failed to submit order');
+      const newOrder = await response.json();
+      setPreorders(prevOrders => [...prevOrders, newOrder]);
+    } catch (error) {
+      console.error('Error submitting order:', error);
+    }
+  };
+
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      const response = await fetch('/api/updateOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status }),
+      });
+      if (!response.ok) throw new Error('Failed to update order status');
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  const deleteOrder = async (orderId) => {
+    try {
+      const response = await fetch(`/api/deleteOrder/${orderId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete order');
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    }
   };
 
   const CustomerPageWithProps = () => (
@@ -728,6 +734,8 @@ const App = () => {
       deleteMenuItem={deleteMenuItem}
       preorders={preorders}
       setPreorders={setPreorders}
+      updateOrderStatus={updateOrderStatus}
+      deleteOrder={deleteOrder}
     />
   );
 
