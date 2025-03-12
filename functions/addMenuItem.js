@@ -11,10 +11,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { category, name, price, description, requiresTwoSides } = JSON.parse(event.body);
+    const { category, name, price, description } = JSON.parse(event.body);
     const result = await pool.query(
-      'INSERT INTO menu_items (category, name, price, description, requires_two_sides) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [category, name, price, description, requiresTwoSides || false]
+      'INSERT INTO menu_items (category, name, price, description) VALUES ($1, $2, $3, $4) RETURNING *',
+      [category, name, price, description]
     );
     return {
       statusCode: 200,
