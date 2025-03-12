@@ -608,6 +608,8 @@ const CustomerPage = ({ menuItems, preorders, addPreorder }) => {
 const App = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [preorders, setPreorders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const storedAuth = localStorage.getItem('isAuthenticated');
     return storedAuth === 'true';
@@ -622,6 +624,9 @@ const App = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
+
         const menuResponse = await fetch('/api/getMenu');
         if (!menuResponse.ok) throw new Error('Failed to fetch menu items');
         const menuData = await menuResponse.json();
@@ -629,10 +634,13 @@ const App = () => {
 
         const ordersResponse = await fetch('/api/getOrders');
         if (!ordersResponse.ok) throw new Error('Failed to fetch orders');
-        const ordersData = await ordersResponse.json();
+        const ordersData = await ordersResponse.json(); // Corrected: Use ordersResponse
         setPreorders(ordersData);
       } catch (error) {
         console.error('Error fetching initial data:', error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchInitialData();
@@ -742,52 +750,56 @@ const App = () => {
   return (
     <Router>
       <div>
-        <Routes>
-          <Route path="/" element={<CustomerPageWithProps />} />
-          <Route
-            path="/admin"
-            element={
-              isAuthenticated ? (
-                <>
-                  <AdminPageWithProps />
-                  <button className="logout-button" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <div className="login-container">
-                  <h2 className="admin-title">Admin Login</h2>
-                  <form onSubmit={handleLogin}>
-                    <label>
-                      Username:
-                      <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                      />
-                    </label>
-                    <br />
-                    <label>
-                      Password:
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </label>
-                    <br />
-                    <button type="submit" className="submit-button">
-                      Login
+        {isLoading && <p>Loading...</p>}
+        {error && <p>Error: {error}</p>}
+        {!isLoading && !error && (
+          <Routes>
+            <Route path="/" element={<CustomerPageWithProps />} />
+            <Route
+              path="/admin"
+              element={
+                isAuthenticated ? (
+                  <>
+                    <AdminPageWithProps />
+                    <button className="logout-button" onClick={handleLogout}>
+                      Logout
                     </button>
-                    {loginError && <p className="error-message">{loginError}</p>}
-                  </form>
-                </div>
-              )
-            }
-          />
-        </Routes>
+                  </>
+                ) : (
+                  <div className="login-container">
+                    <h2 className="admin-title">Admin Login</h2>
+                    <form onSubmit={handleLogin}>
+                      <label>
+                        Username:
+                        <input
+                          type="text"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          required
+                        />
+                      </label>
+                      <br />
+                      <label>
+                        Password:
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                      </label>
+                      <br />
+                      <button type="submit" className="submit-button">
+                        Login
+                      </button>
+                      {loginError && <p className="error-message">{loginError}</p>}
+                    </form>
+                  </div>
+                )
+              }
+            />
+          </Routes>
+        )}
       </div>
     </Router>
   );
